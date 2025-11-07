@@ -5,6 +5,7 @@ for (const key of Reflect.ownKeys(Reflect)) {
   const method = Reflect[key];
   handler[key] = key === 'get' || key === 'set' ?
     // proxy as receiver is trouble with get / set
+    // @see https://es.discourse.group/t/reflect-set-args-receiver-throwing-for-no-reason/2462
     ((target, ...rest) => method(target.deref(), ...rest.slice(0, -1))) :
     ((target, ...rest) => method(target.deref(), ...rest))
   ;
