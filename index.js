@@ -2,10 +2,11 @@ const proxies = new WeakMap;
 const handler = {};
 
 for (const key of Reflect.ownKeys(Reflect)) {
-  handler[key] = key === 'set' ?
-    // proxy as receiver is trouble with set
-    ((target, prop, value) => Reflect.set(target.deref(), prop, value)) :
-    ((target, ...rest) => Reflect[key](target.deref(), ...rest))
+  const method = Reflect[key];
+  handler[key] = key === 'get' || key === 'set' ?
+    // proxy as receiver is trouble with get / set
+    ((target, ...rest) => method(target.deref(), ...rest.slice(0, -1))) :
+    ((target, ...rest) => method(target.deref(), ...rest))
   ;
 }
 
