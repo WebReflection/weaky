@@ -1,0 +1,26 @@
+{
+  "name": "weaky",
+  "version": "0.0.0",
+  "description": "An easy way to avoid leaks",
+  "main": "index.js",
+  "module": "index.js",
+  "exports": {
+    ".": "./index.js"
+  },
+  "keywords": [
+    "weak",
+    "ref",
+    "proxy"
+  ],
+  "author": "Andrea Giammarchi",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WebReflection/weaky.git"
+  },
+  "bugs": {
+    "url": "https://github.com/WebReflection/weaky/issues"
+  },
+  "homepage": "https://github.com/WebReflection/weaky#readme"
+}
