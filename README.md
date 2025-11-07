@@ -1,5 +1,8 @@
 # weaky
 
+<sup>**Social Media Photo by [Igor Dresjan A.P.](https://unsplash.com/@igordresjan) on [Unsplash](https://unsplash.com/)**</sup>
+
+
 An easy way to avoid leaks.
 
 ### Example
