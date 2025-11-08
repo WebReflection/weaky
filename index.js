@@ -3,11 +3,21 @@ const cbs = new WeakMap;
 
 const { apply, get, set } = Reflect;
 
-const fn = { apply: (t, p, a) => apply(t, (p && deref(p)) ?? p, a) };
+// helps passing the right context to the function
+const fn = {
+  apply(target, self, args) {
+    switch (typeof self) {
+      case 'object':
+        if (!self) break;
+      case 'function':
+        self = deref(self) ?? self;
+        break;
+    }
+    return apply(target, self, args);
+  }
+};
 
-const guard = cb => cbs.set(cb, new Proxy(cb, fn)).get(cb);
-
-// proxy as receiver is trouble with get / set
+// avoid proxy as receiver in both get & set traps
 // @see https://es.discourse.group/t/reflect-set-args-receiver-throwing-for-no-reason/2462
 const handler = {
   get(target, prop) {
@@ -15,6 +25,12 @@ const handler = {
     return typeof r === 'function' ? (cbs.get(r) ?? guard(r)) : r;
   },
   set: (target, prop, value) => set(target.deref(), prop, value),
+};
+
+const guard = cb => {
+  const proxy = new Proxy(cb, fn);
+  cbs.set(cb, proxy);
+  return proxy;
 };
 
 for (const key of Reflect.ownKeys(Reflect))

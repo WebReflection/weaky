@@ -7,6 +7,9 @@
   "exports": {
     ".": "./index.js"
   },
+  "scripts": {
+    "test": "echo 'import { proxy } from \"./index.js\"; const o = { get _(){ return this }, $(){ return this._ } }; console.assert(proxy(o).$() === o)' | node --input-type=module"
+  },
   "keywords": [
     "weak",
     "ref",
