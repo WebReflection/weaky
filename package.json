@@ -1,6 +1,6 @@
 {
   "name": "weaky",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "An easy way to avoid leaks",
   "main": "index.js",
   "module": "index.js",
