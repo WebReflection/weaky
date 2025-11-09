@@ -1,19 +1,18 @@
 const proxies = new WeakMap;
-const cbs = new WeakMap;
+const methods = new WeakMap;
 
 const { apply, get, set } = Reflect;
 
 // helps passing the right context to the function
 const fn = {
   apply(target, self, args) {
-    switch (typeof self) {
-      case 'object':
-        if (!self) break;
-      case 'function':
-        self = deref(self) ?? self;
-        break;
-    }
-    return apply(target, self, args);
+    const type = typeof self;
+    return apply(
+      target,
+      (type === 'object' && self) || type === 'function' ?
+        (deref(self) ?? self) : self,
+      args
+    );
   }
 };
 
@@ -21,15 +20,17 @@ const fn = {
 // @see https://es.discourse.group/t/reflect-set-args-receiver-throwing-for-no-reason/2462
 const handler = {
   get(target, prop) {
-    const r = get(target.deref(), prop);
-    return typeof r === 'function' ? (cbs.get(r) ?? guard(r)) : r;
+    const value = get(target.deref(), prop);
+    // guard proxies as context when p.method() is called
+    return typeof value === 'function' ?
+      (methods.get(value) ?? guard(value)) : value;
   },
   set: (target, prop, value) => set(target.deref(), prop, value),
 };
 
-const guard = cb => {
-  const proxy = new Proxy(cb, fn);
-  cbs.set(cb, proxy);
+const guard = method => {
+  const proxy = new Proxy(method, fn);
+  methods.set(method, proxy);
   return proxy;
 };
 
